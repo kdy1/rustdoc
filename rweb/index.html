@@ -1,0 +1,344 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `rweb` crate."><meta name="keywords" content="rust, rustlang, rust-lang, rweb"><title>rweb - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="shortcut icon" href="../favicon.ico"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../rweb/index.html'><div class='logo-container'><img src='../rust-logo.png' alt='logo'></div></a><p class='location'>Crate rweb</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all rweb's items</p></a><div class="block items"><ul><li><a href="#reexports">Re-exports</a></li><li><a href="#modules">Modules</a></li><li><a href="#macros">Macros</a></li><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'rweb', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/rweb/lib.rs.html#1-370' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>rweb</a></span></h1><div class='docblock'><p>A macro to convert a function to rweb handler.</p>
+<p>All parameters should satisfy one of the following.</p>
+<ul>
+<li>Has a path parameter with same name.</li>
+<li>Annotated with the annotations documented below.</li>
+<li>Has a type which implements <a href="../rweb/trait.FromRequest.html" title="FromRequest">FromRequest</a>.</li>
+</ul>
+<h1 id="path-parmeters" class="section-header"><a href="#path-parmeters">Path parmeters</a></h1><h1 id="attributes-on-function-item" class="section-header"><a href="#attributes-on-function-item">Attributes on function item</a></h1><h2 id="heradercontent-type-applcationjson" class="section-header"><a href="#heradercontent-type-applcationjson"><code>#[herader(&quot;content-type&quot;, &quot;applcation/json)]</code></a></h2>
+<p>Make a route matches only if value of the header matches provided value.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">header</span>(<span class="string">&quot;accept&quot;</span>, <span class="string">&quot;*/*&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">routes</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> {
+   <span class="string">&quot;This route matches only if accept header is &#39;*/*&#39;&quot;</span>
+}
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="ident">serve</span>(<span class="ident">routes</span>());
+}</pre></div>
+<h2 id="cors" class="section-header"><a href="#cors"><code>#[cors]</code></a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cors</span>(<span class="ident">origins</span>(<span class="string">&quot;example.com&quot;</span>), <span class="ident">max_age</span> <span class="op">=</span> <span class="number">600</span>)]</span>
+<span class="kw">fn</span> <span class="ident">cors_1</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+   <span class="macro">unreachable</span><span class="macro">!</span>()
+}
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cors</span>(<span class="ident">origins</span>(<span class="string">&quot;example.com&quot;</span>), <span class="ident">methods</span>(<span class="ident">get</span>), <span class="ident">max_age</span> <span class="op">=</span> <span class="number">600</span>)]</span>
+<span class="kw">fn</span> <span class="ident">cors_2</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+   <span class="macro">unreachable</span><span class="macro">!</span>()
+}
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cors</span>(<span class="ident">origins</span>(<span class="string">&quot;*&quot;</span>), <span class="ident">methods</span>(<span class="ident">get</span>), <span class="ident">max_age</span> <span class="op">=</span> <span class="number">600</span>)]</span>
+<span class="kw">fn</span> <span class="ident">cors_3</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+   <span class="macro">unreachable</span><span class="macro">!</span>()
+}
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cors</span>(
+    <span class="ident">origins</span>(<span class="string">&quot;*&quot;</span>),
+    <span class="ident">methods</span>(<span class="ident">get</span>, <span class="ident">post</span>, <span class="ident">patch</span>, <span class="ident">delete</span>),
+    <span class="ident">headers</span>(<span class="string">&quot;accept&quot;</span>),
+    <span class="ident">max_age</span> <span class="op">=</span> <span class="number">600</span>
+)]</span>
+<span class="kw">fn</span> <span class="ident">cors_4</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+   <span class="macro">unreachable</span><span class="macro">!</span>()
+}</pre></div>
+<h2 id="body_sizemax--8192" class="section-header"><a href="#body_sizemax--8192"><code>#[body_size(max = 8192)]</code></a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">body_size</span>(<span class="ident">max</span> <span class="op">=</span> <span class="string">&quot;8192&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">body_size</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+   <span class="macro">unreachable</span><span class="macro">!</span>()
+}</pre></div>
+<h1 id="attributes-on-parameters" class="section-header"><a href="#attributes-on-parameters">Attributes on parameters</a></h1><h2 id="body" class="section-header"><a href="#body"><code>#[body]</code></a></h2>
+<p>Parses request body. Type is <code>bytes::Bytes</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">http</span>::<span class="ident">Error</span>;
+<span class="kw">use</span> <span class="ident">bytes</span>::<span class="ident">Bytes</span>;
+
+<span class="attribute">#[<span class="ident">post</span>(<span class="string">&quot;/body&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">body</span>(<span class="attribute">#[<span class="ident">body</span>]</span> <span class="ident">body</span>: <span class="ident">Bytes</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+   <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">body</span>;
+   <span class="prelude-val">Ok</span>(<span class="ident">String</span>::<span class="ident">new</span>())
+}
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="ident">serve</span>(<span class="ident">body</span>());
+}</pre></div>
+<h2 id="form" class="section-header"><a href="#form"><code>#[form]</code></a></h2>
+<p>Parses request body. <code>Content-Type</code> should be <code>x-www-form-urlencoded</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">Deserialize</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>)]</span>
+<span class="kw">struct</span> <span class="ident">LoginForm</span> {
+    <span class="ident">id</span>: <span class="ident">String</span>,
+    <span class="ident">password</span>: <span class="ident">String</span>,
+}
+
+<span class="attribute">#[<span class="ident">post</span>(<span class="string">&quot;/form&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">form</span>(<span class="attribute">#[<span class="ident">form</span>]</span> <span class="ident">body</span>: <span class="ident">LoginForm</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+   <span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;Ok&quot;</span>)
+}
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="ident">serve</span>(<span class="ident">form</span>());
+}</pre></div>
+<h2 id="json" class="section-header"><a href="#json"><code>#[json]</code></a></h2>
+<p>Parses request body. <code>Content-Type</code> should be <code>application/json</code>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">Deserialize</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>)]</span>
+<span class="kw">struct</span> <span class="ident">LoginForm</span> {
+    <span class="ident">id</span>: <span class="ident">String</span>,
+    <span class="ident">password</span>: <span class="ident">String</span>,
+}
+
+<span class="attribute">#[<span class="ident">post</span>(<span class="string">&quot;/json&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">json</span>(<span class="attribute">#[<span class="ident">json</span>]</span> <span class="ident">body</span>: <span class="ident">LoginForm</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;Ok&quot;</span>)
+}
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="ident">serve</span>(<span class="ident">json</span>());
+}</pre></div>
+<p>Note that you can mix the order of parameters.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">Deserialize</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Deserialize</span>)]</span>
+<span class="kw">struct</span> <span class="ident">LoginForm</span> {
+    <span class="ident">id</span>: <span class="ident">String</span>,
+    <span class="ident">password</span>: <span class="ident">String</span>,
+}
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/param/{a}/{b}&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">body_between_path_params</span>(<span class="ident">a</span>: <span class="ident">u32</span>, <span class="attribute">#[<span class="ident">json</span>]</span> <span class="ident">body</span>: <span class="ident">LoginForm</span>, <span class="ident">b</span>: <span class="ident">u32</span>) <span class="op">-</span><span class="op">&gt;</span>
+<span class="ident">String</span> {     <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">body</span>.<span class="ident">id</span>, <span class="string">&quot;TEST_ID&quot;</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">body</span>.<span class="ident">password</span>, <span class="string">&quot;TEST_PASSWORD&quot;</span>);
+    (<span class="ident">a</span> <span class="op">+</span> <span class="ident">b</span>).<span class="ident">to_string</span>()
+}
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="ident">serve</span>(<span class="ident">body_between_path_params</span>());
+}</pre></div>
+<h2 id="query" class="section-header"><a href="#query"><code>#[query]</code></a></h2>
+<p>Parses query string.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">use_query</span>(<span class="attribute">#[<span class="ident">query</span>]</span> <span class="ident">qs</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="ident">qs</span>
+}
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="ident">serve</span>(<span class="ident">use_query</span>());
+}</pre></div>
+<h2 id="header--header-name" class="section-header"><a href="#header--header-name"><code>#[header = &quot;header-name&quot;]</code></a></h2>
+<p>Value of the header.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">ret_accept</span>(<span class="attribute">#[<span class="ident">header</span> <span class="op">=</span> <span class="string">&quot;accept&quot;</span>]</span> <span class="ident">accept</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="ident">accept</span>
+}
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="ident">serve</span>(<span class="ident">ret_accept</span>());
+}</pre></div>
+<h2 id="cookie--cookie-name" class="section-header"><a href="#cookie--cookie-name"><code>#[cookie = &quot;cookie-name&quot;]</code></a></h2>
+<p>Value of the header.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">cookie</span>(<span class="attribute">#[<span class="ident">header</span> <span class="op">=</span> <span class="string">&quot;sess&quot;</span>]</span> <span class="ident">sess_id</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="ident">sess_id</span>
+}
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="ident">serve</span>(<span class="ident">cookie</span>());
+}</pre></div>
+<h2 id="filter--path_to_fn" class="section-header"><a href="#filter--path_to_fn"><code>#[filter = &quot;path_to_fn&quot;]</code></a></h2>
+<p>Calls function.</p>
+<p><strong>Note</strong>: If the callee returns <code>()</code>, you should use <code>()</code> as type. (Type
+alias is not allowed)</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">num</span>::<span class="ident">NonZeroU16</span>;
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">serde</span>::<span class="ident">Serialize</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>)]</span>
+<span class="kw">struct</span> <span class="ident">Math</span> {
+    <span class="ident">op</span>: <span class="ident">String</span>,
+    <span class="ident">output</span>: <span class="ident">u16</span>,
+}
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/math/{num}&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">math</span>(<span class="ident">num</span>: <span class="ident">u16</span>, <span class="attribute">#[<span class="ident">filter</span> <span class="op">=</span> <span class="string">&quot;div_by&quot;</span>]</span> <span class="ident">denom</span>: <span class="ident">NonZeroU16</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Reply</span> {
+    <span class="ident">rweb</span>::<span class="ident">reply</span>::<span class="ident">json</span>(<span class="kw-2">&amp;</span><span class="ident">Math</span> {
+        <span class="ident">op</span>: <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{} / {}&quot;</span>, <span class="ident">num</span>, <span class="ident">denom</span>),
+        <span class="ident">output</span>: <span class="ident">num</span> <span class="op">/</span> <span class="ident">denom</span>.<span class="ident">get</span>(),
+    })
+}
+
+<span class="kw">fn</span> <span class="ident">div_by</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Filter</span><span class="op">&lt;</span><span class="ident">Extract</span> <span class="op">=</span> (<span class="ident">NonZeroU16</span>,), <span class="ident">Error</span> <span class="op">=</span> <span class="ident">Rejection</span><span class="op">&gt;</span> <span class="op">+</span><span class="ident">Copy</span>
+{    <span class="ident">rweb</span>::<span class="ident">header</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="string">&quot;div-by&quot;</span>).<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">n</span>: <span class="ident">u16</span><span class="op">|</span> <span class="kw">async</span> <span class="kw">move</span> {
+       <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">denom</span>) <span class="op">=</span> <span class="ident">NonZeroU16</span>::<span class="ident">new</span>(<span class="ident">n</span>) {
+           <span class="prelude-val">Ok</span>(<span class="ident">denom</span>)
+       } <span class="kw">else</span> {
+           <span class="prelude-val">Err</span>(<span class="ident">reject</span>::<span class="ident">custom</span>(<span class="ident">DivideByZero</span>))
+       }
+   })
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="kw">struct</span> <span class="ident">DivideByZero</span>;
+
+<span class="kw">impl</span> <span class="ident">reject</span>::<span class="ident">Reject</span> <span class="kw">for</span> <span class="ident">DivideByZero</span> {}
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="ident">serve</span>(<span class="ident">math</span>());
+}</pre></div>
+<h2 id="data" class="section-header"><a href="#data"><code>#[data]</code></a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">futures</span>::<span class="ident">lock</span>::<span class="ident">Mutex</span>;
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
+<span class="kw">struct</span> <span class="ident">Db</span> {
+   <span class="ident">items</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Mutex</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+}
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="kw">async</span> <span class="kw">fn</span> <span class="ident">index</span>(<span class="attribute">#[<span class="ident">data</span>]</span> <span class="ident">db</span>: <span class="ident">Db</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Rejection</span><span class="op">&gt;</span> {
+   <span class="kw">let</span> <span class="ident">items</span> <span class="op">=</span> <span class="ident">db</span>.<span class="ident">items</span>.<span class="ident">lock</span>().<span class="kw">await</span>;
+
+   <span class="prelude-val">Ok</span>(<span class="ident">items</span>.<span class="ident">len</span>().<span class="ident">to_string</span>())
+}
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="kw">let</span> <span class="ident">db</span> <span class="op">=</span> <span class="ident">Default</span>::<span class="ident">default</span>();
+    <span class="ident">serve</span>(<span class="ident">index</span>(<span class="ident">db</span>));
+}</pre></div>
+<h1 id="fromrequest" class="section-header"><a href="#fromrequest">FromRequest</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">http</span>::<span class="ident">StatusCode</span>;
+<span class="kw">use</span> <span class="ident">rweb</span>::{<span class="ident">filters</span>::<span class="ident">BoxedFilter</span>, <span class="kw-2">*</span>};
+
+<span class="kw">impl</span> <span class="ident">FromRequest</span> <span class="kw">for</span> <span class="ident">User</span> {
+   <span class="kw">type</span> <span class="ident">Filter</span> <span class="op">=</span> <span class="ident">BoxedFilter</span><span class="op">&lt;</span>(<span class="ident">User</span>,)<span class="op">&gt;</span>;
+
+   <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span>::<span class="ident">Filter</span> {
+       <span class="comment">// In real world, you can use a header like Authorization</span>
+       <span class="ident">header</span>::<span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>(<span class="string">&quot;x-user-id&quot;</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="ident">User</span> { <span class="ident">id</span> }).<span class="ident">boxed</span>()
+   }
+}
+
+<span class="kw">struct</span> <span class="ident">User</span> {
+   <span class="ident">id</span>: <span class="ident">String</span>,
+}
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">index</span>(<span class="ident">user</span>: <span class="ident">User</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+   <span class="ident">user</span>.<span class="ident">id</span>
+}
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="ident">serve</span>(<span class="ident">index</span>());
+}</pre></div>
+<h1 id="guards" class="section-header"><a href="#guards">Guards</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+
+<span class="comment">// This handler is invoked only if x-appengine-cron matches 1 (case insensitive).</span>
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">header</span>(<span class="string">&quot;X-AppEngine-Cron&quot;</span>, <span class="string">&quot;1&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">gae_cron</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+    <span class="ident">String</span>::<span class="ident">new</span>()
+}</pre></div>
+<h1 id="router" class="section-header"><a href="#router"><code>#[router]</code></a></h1>
+<p><code>#[router]</code> can be used to group routes.</p>
+<h2 id="data-1" class="section-header"><a href="#data-1"><code>#[data]</code></a></h2>
+<p>You can use <code>#[data]</code> with a router.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">struct</span> <span class="ident">Db</span> {}
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/use&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">use_db</span>(<span class="attribute">#[<span class="ident">data</span>]</span> <span class="ident">_db</span>: <span class="ident">Db</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+   <span class="ident">String</span>::<span class="ident">new</span>()
+}
+
+<span class="attribute">#[<span class="ident">router</span>(<span class="string">&quot;/data&quot;</span>, <span class="ident">services</span>(<span class="ident">use_db</span>))]</span>
+<span class="kw">fn</span> <span class="ident">data_param</span>(<span class="attribute">#[<span class="ident">data</span>]</span> <span class="ident">db</span>: <span class="ident">Db</span>) {}</pre></div>
+<h2 id="guard" class="section-header"><a href="#guard">Guard</a></h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">rweb</span>::<span class="kw-2">*</span>;
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">admin_index</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+   <span class="ident">String</span>::<span class="ident">new</span>()
+}
+
+<span class="attribute">#[<span class="ident">get</span>(<span class="string">&quot;/users&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">admin_users</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+   <span class="ident">String</span>::<span class="ident">new</span>()
+}
+
+<span class="attribute">#[<span class="ident">router</span>(<span class="string">&quot;/admin&quot;</span>, <span class="ident">services</span>(<span class="ident">admin_index</span>, <span class="ident">admin_users</span>))]</span>
+<span class="attribute">#[<span class="ident">header</span>(<span class="string">&quot;X-User-Admin&quot;</span>, <span class="string">&quot;1&quot;</span>)]</span>
+<span class="kw">fn</span> <span class="ident">admin</span>() {}</pre></div>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Re-exports</a></h2>
+<table><tr><td><code>pub use <a class="mod" href="../warp/index.html" title="mod warp">warp</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr class='module-item'><td><a class="mod" href="filters/index.html" title='rweb::filters mod'>filters</a></td><td class='docblock-short'><p>Built-in Filters</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="http/index.html" title='rweb::http mod'>http</a></td><td class='docblock-short'><p>A general purpose library of common HTTP types</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="hyper/index.html" title='rweb::hyper mod'>hyper</a></td><td class='docblock-short'><p>hyper</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="redirect/index.html" title='rweb::redirect mod'>redirect</a></td><td class='docblock-short'><p>Redirect requests to a new location.</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="reject/index.html" title='rweb::reject mod'>reject</a></td><td class='docblock-short'><p>Rejections</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="reply/index.html" title='rweb::reply mod'>reply</a></td><td class='docblock-short'><p>Reply to requests.</p>
+</td></tr><tr class='module-item'><td><a class="mod" href="test/index.html" title='rweb::test mod'>test</a></td><td class='docblock-short'><p>Test utilities to test your filters.</p>
+</td></tr></table><h2 id='macros' class='section-header'><a href="#macros">Macros</a></h2>
+<table><tr class='module-item'><td><a class="macro" href="macro.path.html" title='rweb::path macro'>path</a></td><td class='docblock-short'><p>Convenient way to chain multiple path filters together.</p>
+</td></tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.Error.html" title='rweb::Error struct'>Error</a></td><td class='docblock-short'><p>Errors that can happen inside warp.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.Form.html" title='rweb::Form struct'>Form</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.Json.html" title='rweb::Json struct'>Json</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.Query.html" title='rweb::Query struct'>Query</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.Server.html" title='rweb::Server struct'>Server</a></td><td class='docblock-short'><p>A Warp Server ready to filter requests.</p>
+</td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table><tr class='module-item'><td><a class="trait" href="trait.Filter.html" title='rweb::Filter trait'>Filter</a></td><td class='docblock-short'><p>Composable request filters.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.FromRequest.html" title='rweb::FromRequest trait'>FromRequest</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="trait" href="trait.Future.html" title='rweb::Future trait'>Future</a></td><td class='docblock-short'><p>A future represents an asynchronous computation.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.Sink.html" title='rweb::Sink trait'>Sink</a></td><td class='docblock-short'><p>A <code>Sink</code> is a value into which other values can be sent, asynchronously.</p>
+</td></tr><tr class='module-item'><td><a class="trait" href="trait.Stream.html" title='rweb::Stream trait'>Stream</a></td><td class='docblock-short'><p>A stream of values produced asynchronously.</p>
+</td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.serve.html" title='rweb::serve fn'>serve</a></td><td class='docblock-short'><p>Create a <code>Server</code> with the provided <code>Filter</code>.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.service.html" title='rweb::service fn'>service</a></td><td class='docblock-short'><p>Convert a <code>Filter</code> into a <code>Service</code>.</p>
+</td></tr></table><h2 id='attributes' class='section-header'><a href="#attributes">Attribute Macros</a></h2>
+<table><tr class='module-item'><td><a class="attr" href="attr.delete.html" title='rweb::delete attr'>delete</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="attr" href="attr.get.html" title='rweb::get attr'>get</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="attr" href="attr.head.html" title='rweb::head attr'>head</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="attr" href="attr.options.html" title='rweb::options attr'>options</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="attr" href="attr.patch.html" title='rweb::patch attr'>patch</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="attr" href="attr.post.html" title='rweb::post attr'>post</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="attr" href="attr.put.html" title='rweb::put attr'>put</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="attr" href="attr.router.html" title='rweb::router attr'>router</a></td><td class='docblock-short'><p>Creates a router. Useful for modularizing codes.</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "rweb";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

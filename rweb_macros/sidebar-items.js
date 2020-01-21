@@ -1,0 +1,1 @@
+initSidebarItems({"attr":[["delete",""],["get",""],["head",""],["options",""],["patch",""],["post",""],["put",""],["router","Creates a router. Useful for modularizing codes."]]});
